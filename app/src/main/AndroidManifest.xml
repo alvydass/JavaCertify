@@ -12,13 +12,16 @@
         android:theme="@style/Theme.JavaCertify"
         tools:targetApi="31">
         <activity
+            android:name=".AddQuestion"
+            android:exported="false" />
+        <activity
             android:name=".JavaVersionChooseActivity"
             android:exported="false"
-            android:parentActivityName=".SplashScreenActivity"/>
+            android:parentActivityName=".SplashScreenActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:parentActivityName=".JavaVersionChooseActivity"/>
+            android:parentActivityName=".JavaVersionChooseActivity" />
         <activity
             android:name=".QuizActivity"
             android:exported="false" />

@@ -13,10 +13,12 @@ public class Question {
 
     private String explanation;
 
+    private QuizType quizType;
+
     public Question() {
     }
 
-    public Question(String question, String option1, String option2, String option3, String option4, String option5, String option6, int answerNr, String explanation) {
+    public Question(String question, String option1, String option2, String option3, String option4, String option5, String option6, int answerNr, String explanation, QuizType quizType) {
         this.question = question;
         this.option1 = option1;
         this.option2 = option2;
@@ -26,6 +28,7 @@ public class Question {
         this.option6 = option6;
         this.answerNr = answerNr;
         this.explanation = explanation;
+        this.quizType = quizType;
     }
 
     public String getQuestion() {
@@ -98,5 +101,13 @@ public class Question {
 
     public void setExplanation(String explanation) {
         this.explanation = explanation;
+    }
+
+    public QuizType getQuizType() {
+        return quizType;
+    }
+
+    public void setQuizType(QuizType quizType) {
+        this.quizType = quizType;
     }
 }

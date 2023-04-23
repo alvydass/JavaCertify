@@ -13,7 +13,6 @@ import com.smarty.javacertify.QuizContract.QuestionsTable;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +21,7 @@ public class QuizDbHelper extends SQLiteOpenHelper {
 
     private Context context;
     private static final String DATABASE_NAME = "JavaQuiz.db";
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 17;
 
     private SQLiteDatabase db;
 
@@ -46,7 +45,8 @@ public class QuizDbHelper extends SQLiteOpenHelper {
                 QuestionsTable.COLUMN_OPTION5 + " TEXT, " +
                 QuestionsTable.COLUMN_OPTION6 + " TEXT, " +
                 QuestionsTable.COLUMN_ANSWER_NR + " INTEGER, " +
-                QuestionsTable.EXPLANATION + " TEXT" +
+                QuestionsTable.EXPLANATION + " TEXT, " +
+                QuestionsTable.QUIZ_TYPE + " TEXT" +
                 ")";
 
         db.execSQL(SQL_CREATE_QUESTIONS_TABLE);
@@ -60,18 +60,23 @@ public class QuizDbHelper extends SQLiteOpenHelper {
     }
 
     private void fillQuestionsTable() {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.test_quiz);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-        String line;
-        try {
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] splitedLine = line.split("]");
-                Question question = new Question(formatQuestion(splitedLine[0]), splitedLine[1], splitedLine[2], splitedLine[3], splitedLine[4], splitedLine[5], splitedLine[6],
-                        Integer.parseInt(splitedLine[7]), splitedLine[8]);
-                addQuestion(question);
+        for (QuizType quizType : QuizType.values()) {
+            if (quizType.getFile() == 0) {
+                continue;
             }
-        } catch (Exception e) {
-            Log.wtf("WTF", e);
+            InputStream inputStream = context.getResources().openRawResource(quizType.getFile());
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            String line;
+            try {
+                while ((line = bufferedReader.readLine()) != null) {
+                    String[] splitedLine = line.split("]");
+                    Question question = new Question(formatQuestion(splitedLine[0]), splitedLine[1], splitedLine[2], splitedLine[3], splitedLine[4], splitedLine[5], splitedLine[6],
+                            Integer.parseInt(splitedLine[7]), splitedLine[8], quizType);
+                    addQuestion(question);
+                }
+            } catch (Exception e) {
+                Log.wtf("WTF", e);
+            }
         }
     }
 
@@ -90,14 +95,15 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         cv.put(QuestionsTable.COLUMN_OPTION6, question.getOption6());
         cv.put(QuestionsTable.COLUMN_ANSWER_NR, question.getAnswerNr());
         cv.put(QuestionsTable.EXPLANATION, question.getExplanation());
+        cv.put(QuestionsTable.QUIZ_TYPE, question.getQuizType().name());
         db.insert(QuestionsTable.TABLE_NAME, null, cv);
     }
 
     @SuppressLint("Range")
-    public List<Question> getAllQuestions() {
+    public List<Question> getAllQuestions(QuizType quizType) {
         List<Question> questionList = new ArrayList<>();
         db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsTable.TABLE_NAME, null);
+        Cursor c = db.rawQuery("SELECT * FROM " + QuestionsTable.TABLE_NAME + " WHERE quiz_type = ?", new String[]{quizType.name()});
 
         if (c.moveToFirst()) {
             do {
@@ -111,6 +117,7 @@ public class QuizDbHelper extends SQLiteOpenHelper {
                 question.setOption6(c.getString(c.getColumnIndex(QuestionsTable.COLUMN_OPTION6)));
                 question.setAnswerNr(c.getInt(c.getColumnIndex(QuestionsTable.COLUMN_ANSWER_NR)));
                 question.setExplanation(c.getString(c.getColumnIndex(QuestionsTable.EXPLANATION)));
+                question.setQuizType(QuizType.valueOf(c.getString(c.getColumnIndex(QuestionsTable.QUIZ_TYPE))));
                 questionList.add(question);
             } while (c.moveToNext());
         }

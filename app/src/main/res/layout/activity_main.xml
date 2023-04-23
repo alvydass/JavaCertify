@@ -19,6 +19,18 @@
         android:textSize="35sp" />
 
     <TextView
+        android:id="@+id/no_questions"
+        android:layout_below="@id/quiz_type_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="NO QUESTIONS FOUND"
+        android:textColor="#FD0F0F"
+        android:textSize="35sp"
+        android:visibility="invisible"/>
+
+    <TextView
         android:id="@+id/text_view_highscore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,5 +46,14 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="Start Quiz" />
+
+    <Button
+        android:id="@+id/button_add_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Add question"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/button_start_quiz"/>
 
 </RelativeLayout>

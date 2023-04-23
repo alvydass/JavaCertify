@@ -1,5 +1,7 @@
 package com.smarty.javacertify;
 
+import static com.smarty.javacertify.JavaVersionChooseActivity.QUIZ_CODE;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -22,6 +24,8 @@ import java.util.Locale;
 public class QuizActivity extends AppCompatActivity {
 
     public static final String EXTRA_SCORE = "extraScore";
+
+    public static final String PERCENTAGE = "percentage";
     private static final long COUNTDOWN_IN_MILLIS = 90000;
 
     private TextView textViewQuestion;
@@ -51,6 +55,8 @@ public class QuizActivity extends AppCompatActivity {
     private Question currentQuestion;
 
     private int score;
+
+    private int questionCount;
     private boolean answered;
 
     private long backPressedTime;
@@ -84,7 +90,10 @@ public class QuizActivity extends AppCompatActivity {
         textColorDefaultCd = textViewCountDown.getTextColors();
 
         QuizDbHelper dbHelper = new QuizDbHelper(this);
-        questionList = dbHelper.getAllQuestions();
+        Intent intent = getIntent();
+        String quizTypeString = intent.getStringExtra(QUIZ_CODE);
+        questionList = dbHelper.getAllQuestions(QuizType.valueOf(quizTypeString));
+        questionCount = questionList.size();
         questionCountTotal = questionList.size();
         Collections.shuffle(questionList);
 
@@ -118,7 +127,7 @@ public class QuizActivity extends AppCompatActivity {
             textViewQuestion.setText(currentQuestion.getQuestion());
             rb1.setText("A) " + currentQuestion.getOption1());
             rb2.setText("B) " + currentQuestion.getOption2());
-            rb3.setText("C) " +currentQuestion.getOption3());
+            rb3.setText("C) " + currentQuestion.getOption3());
             rb4.setText("D) " + currentQuestion.getOption4());
             rb5.setText("E) " + currentQuestion.getOption5());
             rb6.setText("F) " + currentQuestion.getOption6());
@@ -233,6 +242,8 @@ public class QuizActivity extends AppCompatActivity {
     private void finishQuiz() {
         Intent resultIntent = new Intent();
         resultIntent.putExtra(EXTRA_SCORE, score);
+        double percentage = ((double) score / (double) questionCount) * 100;
+        resultIntent.putExtra(PERCENTAGE, percentage);
         setResult(RESULT_OK, resultIntent);
         finish();
     }

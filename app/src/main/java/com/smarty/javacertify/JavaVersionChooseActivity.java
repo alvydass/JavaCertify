@@ -25,37 +25,37 @@ public class JavaVersionChooseActivity extends AppCompatActivity {
 
         ocp8.setOnClickListener(v -> {
             Intent intent = new Intent(JavaVersionChooseActivity.this, MainActivity.class);
-            intent.putExtra(QUIZ_CODE, "JAVA 8 OCP QUIZ");
+            intent.putExtra(QUIZ_CODE, QuizType.JAVA_8_OCP_QUIZ.name());
             startActivity(intent);
         });
 
         oca8.setOnClickListener(v -> {
             Intent intent = new Intent(JavaVersionChooseActivity.this, MainActivity.class);
-            intent.putExtra(QUIZ_CODE, "JAVA 8 OCA QUIZ");
+            intent.putExtra(QUIZ_CODE, QuizType.JAVA_8_OCA_QUIZ.name());
             startActivity(intent);
         });
 
         ocp11.setOnClickListener(v -> {
             Intent intent = new Intent(JavaVersionChooseActivity.this, MainActivity.class);
-            intent.putExtra(QUIZ_CODE, "JAVA 11 OCP QUIZ");
+            intent.putExtra(QUIZ_CODE, QuizType.JAVA_11_OCP_QUIZ.name());
             startActivity(intent);
         });
 
         oca11.setOnClickListener(v -> {
             Intent intent = new Intent(JavaVersionChooseActivity.this, MainActivity.class);
-            intent.putExtra(QUIZ_CODE, "JAVA 11 OCA QUIZ");
+            intent.putExtra(QUIZ_CODE, QuizType.JAVA_11_OCA_QUIZ.name());
             startActivity(intent);
         });
 
         ocp17.setOnClickListener(v -> {
             Intent intent = new Intent(JavaVersionChooseActivity.this, MainActivity.class);
-            intent.putExtra(QUIZ_CODE, "JAVA 17 OCP QUIZ");
+            intent.putExtra(QUIZ_CODE, QuizType.JAVA_17_OCP_QUIZ.name());
             startActivity(intent);
         });
 
         oca17.setOnClickListener(v -> {
             Intent intent = new Intent(JavaVersionChooseActivity.this, MainActivity.class);
-            intent.putExtra(QUIZ_CODE, "JAVA 17 OCA QUIZ");
+            intent.putExtra(QUIZ_CODE, QuizType.JAVA_11_OCA_QUIZ.name());
             startActivity(intent);
         });
     }
