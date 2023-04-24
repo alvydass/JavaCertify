@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">JavaCertify</string>
+    <string-array name="answers">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+    </string-array>
 </resources>

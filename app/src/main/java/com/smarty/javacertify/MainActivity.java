@@ -13,11 +13,14 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +34,11 @@ public class MainActivity extends AppCompatActivity {
 
     private String quizTypeString;
 
+    private QuizDbHelper dbHelper;
+
+    private static final Map<String, Integer> map = Map.ofEntries(Map.entry("A", 1),
+            Map.entry("B", 2), Map.entry("C", 3), Map.entry("D", 4), Map.entry("E", 5), Map.entry("F", 6));
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         textViewHighscore = findViewById(R.id.text_view_highscore);
         loadHighscore(quizTypeString);
 
-        QuizDbHelper dbHelper = new QuizDbHelper(this);
+        dbHelper = new QuizDbHelper(this);
         List<Question> allQuestions = dbHelper.getAllQuestions(QuizType.valueOf(quizTypeString));
         Button buttonStartQuiz = findViewById(R.id.button_start_quiz);
         Button addQuestion = findViewById(R.id.button_add_question);
@@ -98,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void showCustomDialog() {
+
         final Dialog dialog = new Dialog(MainActivity.this);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -106,8 +115,15 @@ public class MainActivity extends AppCompatActivity {
 
         dialog.setContentView(R.layout.activity_add_question);
 
+        Spinner spinnerLanguages = dialog.findViewById(R.id.spinneris);
+        ArrayAdapter<CharSequence>adapter=ArrayAdapter.createFromResource(this, R.array.answers, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        spinnerLanguages.setAdapter(adapter);
+        spinnerLanguages.setSelection(0);
+
 
         final EditText questionInputText = dialog.findViewById(R.id.question_input_text);
+        final EditText explanationInputText = dialog.findViewById(R.id.question_explanation);
         final EditText optionAInputText = dialog.findViewById(R.id.option_a);
         final EditText optionBInputText = dialog.findViewById(R.id.option_b);
         final EditText optionCInputText = dialog.findViewById(R.id.option_c);
@@ -124,6 +140,11 @@ public class MainActivity extends AppCompatActivity {
                questionInputText.setError("Required");
                return;
            }
+
+            if (TextUtils.isEmpty(explanationInputText.getText().toString())) {
+                explanationInputText.setError("Required");
+                return;
+            }
 
             if (TextUtils.isEmpty(optionAInputText.getText().toString())) {
                 questionInputText.setError("Required");
@@ -155,7 +176,27 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
-            dialog.dismiss();
+            if (TextUtils.isEmpty(explanationInputText.getText().toString())) {
+                questionInputText.setError("Required");
+                return;
+            }
+
+            Question question = new Question();
+            question.setQuestion(questionInputText.getText().toString());
+            question.setOption1(optionAInputText.getText().toString());
+            question.setOption2(optionBInputText.getText().toString());
+            question.setOption3(optionCInputText.getText().toString());
+            question.setOption4(optionDInputText.getText().toString());
+            question.setOption5(optionEInputText.getText().toString());
+            question.setOption6(optionFInputText.getText().toString());
+            question.setExplanation(explanationInputText.getText().toString());
+            String s = spinnerLanguages.getSelectedItem().toString();
+            question.setAnswerNr(map.get(s));
+            question.setQuizType(QuizType.valueOf(quizTypeString));
+            dbHelper.saveQuestion(question);
+
+            finish();
+            startActivity(getIntent());
         });
 
         cancelButton.setOnClickListener(v -> dialog.dismiss());

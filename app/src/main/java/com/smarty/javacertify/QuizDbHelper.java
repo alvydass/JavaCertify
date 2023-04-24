@@ -125,4 +125,8 @@ public class QuizDbHelper extends SQLiteOpenHelper {
         c.close();
         return questionList;
     }
+
+    public void saveQuestion(Question question) {
+        addQuestion(question);
+    }
 }
